@@ -77,7 +77,7 @@ handle_cast(_, State) ->
     {noreply, State}.
 
 %% @hidden
-handle_info(flush, #state{name=Name, hits=Hits, mod_ref=Mod, timestamp=TS} = State) ->
+handle_info(flush, #state{hits=Hits, mod_ref=Mod, timestamp=TS} = State) ->
     gen_server:cast(Mod, {per_second, TS, Hits}),
     {noreply, State#state{hits=0, timestamp=timestamp()}}.
 

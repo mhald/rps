@@ -66,7 +66,7 @@ handle_cast({stats, Stats}, State) ->
     io:format("Stats ~p~n", [Stats]),
     {noreply, State};
 
-handle_cast(V, State) ->
+handle_cast(_, State) ->
     {noreply, State}.
 
 %% @hidden

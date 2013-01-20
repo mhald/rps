@@ -76,8 +76,7 @@ handle_cast(_, State) ->
     {noreply, State}.
 
 %% @hidden
-handle_info(send_upstream, #state{name=Name, hit_list=List, report_type=Format, mod_ref=Mod} = State) ->
-    %io:format("Flush called for ~p with ~p hits~n", [Name, List]),
+handle_info(send_upstream, #state{hit_list=List, report_type=Format, mod_ref=Mod} = State) ->
     gen_server:cast(Mod, report(Format, List)),
     {noreply, State#state{hit_list=[]}}.
 
