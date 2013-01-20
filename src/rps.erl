@@ -25,7 +25,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/1, info/0, incr/0, incr/1, test/0]).
+-export([start_link/1, info/0, incr/1, incr/2, test/0]).
 
 %% Behavior callbacks
 
@@ -43,14 +43,16 @@
                 timestamp :: string(),
                 hits = 0  :: integer()}).
 
-incr() -> gen_server:cast(?MODULE, {incr, 1}).
-incr(Count) -> gen_server:cast(?MODULE, {incr, Count}).
+incr(Name) -> gen_server:cast({global, Name}, {incr, 1}).
+incr(Name, Count) -> gen_server:cast({global, Name}, {incr, Count}).
 
 info() -> gen_server:call(?MODULE, {info}).
 
 %% @doc Start server listening on IpAddr:Port
 -spec start_link(list()) -> ok | ignore | {error, any()}.
-start_link(List) -> gen_server:start_link({local, ?MODULE}, ?MODULE, List, []).
+start_link([List]) -> 
+    Name = proplists:get_value(name, List),
+    gen_server:start_link({global, Name}, ?MODULE, [List], []).
 
 %% @doc Returns the callback module's state
 -spec init(list()) -> {ok, #state{}} | {error, bad_init_state} | {error, any()}.
@@ -100,4 +102,4 @@ timestamp() ->
                      ]).
 
 test() ->
-    spawn(fun() -> [begin timer:sleep(250), incr() end || _Count <- lists:seq(1,1000) ] end).
+    spawn(fun() -> [begin timer:sleep(250), incr(api_call) end || _Count <- lists:seq(1,1000) ] end).
