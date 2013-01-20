@@ -1,0 +1,7 @@
+{application, rps,
+ [{description, "Request per second counter"},
+  {vsn, "0.1"},
+  {modules, [rps, []]},
+  {applications, [kernel, stdlib]},
+  {env, []}
+]}.
