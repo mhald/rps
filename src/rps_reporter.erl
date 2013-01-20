@@ -76,17 +76,17 @@ handle_cast(_, State) ->
     {noreply, State}.
 
 %% @hidden
-handle_info(send_upstream, #state{hit_list=List, report_type=Format, mod_ref=Mod} = State) ->
-    gen_server:cast(Mod, report(Format, List)),
+handle_info(send_upstream, #state{name=Name, hit_list=List, report_type=Format, mod_ref=Mod} = State) ->
+    gen_server:cast(Mod, report(Name, Format, List)),
     {noreply, State#state{hit_list=[]}}.
 
-report(raw, List) ->
-    {raw_stats,
+report(Name, raw, List) ->
+    {raw_stats, Name,
       [{TS, Value} || #guage{timestamp=TS, value=Value} <- List]
     };
 
-report(stats, List) ->
-    {stats,
+report(Name, stats, List) ->
+    {stats, Name,
        stats_util:high_low(List)
     }.
 

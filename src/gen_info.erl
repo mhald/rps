@@ -57,13 +57,13 @@ handle_info(_, State) ->
     {noreply, State}.
 
 %% @hidden
-handle_cast({raw_stats, Stats}, State) ->
-    io:format("Raw stats ~p~n", [Stats]),
+handle_cast({raw_stats, Name, Stats}, State) ->
+    io:format("Raw stats ~p ~p~n", [Name, Stats]),
     {noreply, State};
 
 %% @hidden
-handle_cast({stats, Stats}, State) ->
-    io:format("Stats ~p~n", [Stats]),
+handle_cast({stats, Name, Stats}, State) ->
+    io:format("Stats ~p ~p~n", [Name, Stats]),
     {noreply, State};
 
 handle_cast(_, State) ->
