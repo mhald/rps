@@ -92,14 +92,44 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 timestamp() ->
-    {{Y,M,D}, {H,Min,S}} = erlang:universaltime(),
-    iolist_to_binary([integer_to_list(Y),
-                      integer_to_list(M),
-                      integer_to_list(D),
-                      integer_to_list(H),
-                      integer_to_list(Min),
-                      integer_to_list(S)
-                     ]).
+    %% return the timestamp as a binary in rfc1123 format
+    Date = erlang:universaltime(),
+    {{Y,Mo,D}, {H,M,S}} = Date,
+    Wday = calendar:day_of_the_week({Y, Mo, D}),
+	  << (weekday(Wday))/binary, ", ", (pad_int(D))/binary, " ",
+		   (month(Mo))/binary, " ", (list_to_binary(integer_to_list(Y)))/binary,
+		   " ", (pad_int(H))/binary, $:, (pad_int(M))/binary,
+		   $:, (pad_int(S))/binary, " GMT" >>.
+
+-spec pad_int(0..59) -> binary().
+pad_int(X) when X < 10 ->
+	<< $0, ($0 + X) >>;
+pad_int(X) ->
+	list_to_binary(integer_to_list(X)).
+
+-spec weekday(1..7) -> <<_:24>>.
+weekday(1) -> <<"Mon">>;
+weekday(2) -> <<"Tue">>;
+weekday(3) -> <<"Wed">>;
+weekday(4) -> <<"Thu">>;
+weekday(5) -> <<"Fri">>;
+weekday(6) -> <<"Sat">>;
+weekday(7) -> <<"Sun">>.
+
+-spec month(1..12) -> <<_:24>>.
+month( 1) -> <<"Jan">>;
+month( 2) -> <<"Feb">>;
+month( 3) -> <<"Mar">>;
+month( 4) -> <<"Apr">>;
+month( 5) -> <<"May">>;
+month( 6) -> <<"Jun">>;
+month( 7) -> <<"Jul">>;
+month( 8) -> <<"Aug">>;
+month( 9) -> <<"Sep">>;
+month(10) -> <<"Oct">>;
+month(11) -> <<"Nov">>;
+month(12) -> <<"Dec">>.
+
 
 test() ->
     spawn(fun() -> [begin timer:sleep(250), incr(api_call) end || _Count <- lists:seq(1,1000) ] end).
