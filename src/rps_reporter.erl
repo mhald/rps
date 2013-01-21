@@ -49,7 +49,9 @@
 
 %% @doc Start server
 -spec start_link(list()) -> ok | ignore | {error, any()}.
-start_link(List) -> gen_server:start_link({local, ?MODULE}, ?MODULE, List, []).
+start_link(List) ->
+    Name = "reporter_" ++ proplists:get_value(name, List),
+    gen_server:start_link({global, Name}, ?MODULE, List, []).
 
 %% @doc Returns the callback module's state
 -spec init(list()) -> {ok, #state{}} | {error, bad_init_state} | {error, any()}.
