@@ -26,7 +26,7 @@ start_link(Options) ->
 %%-------------------------------------------------------------------
 %% @hidden
 -spec init(list()) -> {ok, {{one_for_one, 5, 60}, [supervisor:child_spec()]}}.
-init(Lists) ->
+init([Lists]) ->
    Children = [{proplists:get_value(name, List),
                   {rps, start_link, [List]}, permanent, 2000, worker, []}
             || List <- Lists],

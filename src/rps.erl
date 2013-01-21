@@ -50,7 +50,7 @@ info() -> gen_server:call(?MODULE, {info}).
 
 %% @doc Start server listening on IpAddr:Port
 -spec start_link(list()) -> ok | ignore | {error, any()}.
-start_link([List]) -> 
+start_link(List) -> 
     Name = proplists:get_value(name, List),
     gen_server:start_link({global, Name}, ?MODULE, [List], []).
 
